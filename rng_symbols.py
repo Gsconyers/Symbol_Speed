@@ -91,7 +91,7 @@ def do_test():
 #do_test()
 
 # what follows is some experiments on getting the positional error indication working
-
+#todo: implement into a method that works with prior code
 original = "12345"
 wrong = "12XXX"
 short = "1234"
