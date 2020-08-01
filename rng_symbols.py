@@ -50,13 +50,13 @@ def grading(original,typed):
     typed_length = len(typed_list)
     results = length_check(original_length,typed_length)
     error_count = results["errors"]
-    positional_errors = {}
+    positional_errors = []
     for char in range(0,results["to check"]):
         original_char = original_list.pop(0)
         typed_char = typed_list.pop(0)
         if original_char != typed_char:
             error_count += 1
-            positional_errors[str(char)] = [original_char,typed_char]
+            positional_errors.append(char)
     return {"errors":error_count,"positional_errors":positional_errors}
 #TODO: implement graphical showing of where mistakes were made. Example:
 
@@ -88,4 +88,64 @@ def do_test():
         print("you took", total_time, "seconds.")
 
     print(position_of_mistakes)
-do_test()
+#do_test()
+
+# what follows is some experiments on getting the positional error indication working
+
+original = "12345"
+wrong = "12XXX"
+short = "1234"
+long = "123456"
+# instead of refactoring into proper method, change comp to change what is compared.
+# todo: not this
+comp = long
+def largest_val(first,second):
+    if first < second:
+        return second
+    else:
+        return first
+
+def largest_smallest(first,second):
+    num_list = []
+    if first < second:
+        num_list.append(second)
+        num_list.append(first)
+    else:
+        num_list.append(first)
+        num_list.append(second)
+    return num_list
+
+#get output dictionary
+test_output = grading(original,wrong)
+#prove it worked
+print(test_output["positional_errors"])
+#put into list
+positions = test_output["positional_errors"]
+#initialize error positions
+error_positions = ""
+#get the pair sorted
+ordered_vals = largest_smallest(len(original),len(comp))
+print(ordered_vals)
+#append the "position" of a missing/extra character
+if len(original) != len(comp):
+    for x in range(ordered_vals[1],ordered_vals[0]):
+        positions.append(x)
+
+    #add the carets to point at mistakes
+for char in range(0,largest_val(len(original),len(comp))):
+    if positions:
+        if char == positions[0]:
+            print("error found at position", char)
+            error_positions += "^"
+            positions.pop(0)
+            print(positions)
+        else:
+            error_positions += " "
+    else:
+        error_positions += " "
+# the idea here is that, by going with the longest length value, all errors would be covered
+# regardless of whether it is too long or too short
+
+print(original)
+print(comp)
+print(error_positions)
